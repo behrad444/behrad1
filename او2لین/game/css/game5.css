@@ -1,0 +1,39 @@
+body {
+    background-color: #1e1e1e;
+    color: #33ff33;
+    font-family: 'Courier New', monospace;
+    margin: 0;
+    padding: 20px;
+}
+#terminal {
+    max-width: 800px;
+    margin: 0 auto;
+}
+#output {
+    height: 400px;
+    overflow-y: auto;
+    border: 1px solid #33ff33;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #000;
+}
+#input {
+    width: 100%;
+    padding: 8px;
+    background-color: #000;
+    color: #33ff33;
+    border: 1px solid #33ff33;
+    font-family: 'Courier New', monospace;
+}
+.command {
+    color: #ffff00;
+}
+.system {
+    color: #33ff33;
+}
+.item {
+    color: #ff66ff;
+}
+.enemy {
+    color: #ff3333;
+}

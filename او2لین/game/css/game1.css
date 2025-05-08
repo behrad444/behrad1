@@ -1,0 +1,407 @@
+/* game1 */
+/* استایل‌های پایه */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #000;
+    font-family: 'Arial', sans-serif;
+    color: white;
+    touch-action: none;
+    user-select: none;
+    height: 100vh;
+    perspective: 1000px;
+}
+
+#gameContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#gameCanvas {
+    display: block;
+    background: radial-gradient(ellipse at center, #0a0e24 0%, #000000 100%);
+    filter: contrast(1.2);
+}
+
+/* رابط کاربری بازی */
+#ui {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 18px;
+    text-shadow: 0 0 5px #00f, 0 0 10px #00f;
+    z-index: 10;
+    background: rgba(0, 0, 20, 0.7);
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #00f;
+    box-shadow: 0 0 15px rgba(0, 0, 255, 0.5);
+}
+
+#score {
+    font-size: 24px;
+    color: #0ff;
+    margin-bottom: 5px;
+}
+
+#level {
+    color: #f0f;
+    margin-bottom: 5px;
+}
+
+#health {
+    color: #f00;
+    margin-bottom: 5px;
+}
+
+#healthBar {
+    width: 100px;
+    height: 10px;
+    background: #300;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+#healthBarFill {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(to right, #f00, #0f0);
+    transition: width 0.3s;
+}
+
+/* منوهای بازی */
+.game-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(ellipse at center, rgba(0, 10, 30, 0.9) 0%, rgba(0, 0, 10, 0.95) 100%);
+    z-index: 100;
+    backdrop-filter: blur(5px);
+    transition: all 0.5s ease;
+    transform-style: preserve-3d;
+}
+
+#startScreen {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><pattern id="stars" x="0" y="0" width="50" height="50" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.5"/></pattern><rect x="0" y="0" width="100%" height="100%" fill="url(%23stars)"/></svg>');
+}
+
+#gameOverScreen, #pauseScreen {
+    display: none;
+}
+
+/* عنوان بازی */
+.game-title {
+    font-size: 3.5rem;
+    color: #0ff;
+    text-shadow: 0 0 10px #00f, 0 0 20px #00f, 0 0 30px #008;
+    margin-bottom: 2rem;
+    text-align: center;
+    animation: pulse 2s infinite alternate;
+    transform: translateZ(50px);
+}
+
+@keyframes pulse {
+    0% { transform: scale(1) translateZ(50px); }
+    100% { transform: scale(1.05) translateZ(50px); }
+}
+
+/* دکمه‌های بازی */
+.btn-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    transform: translateZ(30px);
+}
+
+.game-btn {
+    background: linear-gradient(to bottom, #00f, #008);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border-radius: 10px;
+    cursor: pointer;
+    min-width: 200px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+    box-shadow: 0 0 10px #00f, 0 0 20px #00f;
+    z-index: 1;
+}
+
+.game-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(0, 255, 255, 0.4), transparent);
+    transition: all 0.5s;
+    z-index: -1;
+}
+
+.game-btn:hover {
+    transform: scale(1.1) translateZ(10px);
+    box-shadow: 0 0 15px #0ff, 0 0 30px #0ff;
+}
+
+.game-btn:hover::before {
+    left: 100%;
+}
+
+.game-btn:active {
+    transform: scale(0.95) translateZ(10px);
+}
+
+/* منوی ارتقا */
+#upgradeMenu {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    gap: 15px;
+    z-index: 50;
+    background: rgba(0, 0, 30, 0.8);
+    padding: 15px;
+    border-radius: 15px;
+    border: 1px solid #00f;
+    box-shadow: 0 0 20px rgba(0, 0, 255, 0.7);
+    backdrop-filter: blur(5px);
+}
+
+.upgrade-btn {
+    padding: 12px 20px;
+    font-size: 1rem;
+    min-width: 150px;
+    border-radius: 8px;
+}
+
+/* دکمه بازگشت */
+.back-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 0, 0, 0.7);
+    border: 1px solid #f00;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 200;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    transition: all 0.3s;
+}
+
+.back-btn:hover {
+    background: rgba(255, 0, 0, 0.9);
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #f00;
+}
+
+/* دکمه مکث */
+#pauseBtn {
+    position: absolute;
+    top: 20px;
+    right: 70px;
+    background: rgba(0, 255, 255, 0.7);
+    border: 1px solid #0ff;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 200;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    transition: all 0.3s;
+    display: none;
+}
+
+#pauseBtn:hover {
+    background: rgba(0, 255, 255, 0.9);
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #0ff;
+}
+
+/* انیمیشن‌های ویژه */
+@keyframes float {
+    0%, 100% { transform: translateY(0) translateZ(0); }
+    50% { transform: translateY(-10px) translateZ(10px); }
+}
+
+.floating {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* صفحه راهنما */
+#howToPlayScreen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 5, 15, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 150;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.how-to-play-content {
+    background: rgba(0, 10, 30, 0.8);
+    border: 1px solid #00f;
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 800px;
+    width: 90%;
+    box-shadow: 0 0 30px rgba(0, 0, 255, 0.5);
+    transform-style: preserve-3d;
+    transform: translateZ(50px);
+}
+
+.how-to-play-content h2 {
+    color: #0ff;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 2rem;
+    text-shadow: 0 0 10px #00f;
+}
+
+.how-to-play-content p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.how-to-play-content ul {
+    margin: 20px 0;
+    padding-left: 30px;
+}
+
+.how-to-play-content li {
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.how-to-play-content li::before {
+    content: '›';
+    color: #0ff;
+    position: absolute;
+    left: -20px;
+}
+
+/* صفحه تنظیمات */
+#settingsScreen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 5, 15, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 150;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.settings-content {
+    background: rgba(0, 10, 30, 0.8);
+    border: 1px solid #00f;
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 600px;
+    width: 90%;
+    box-shadow: 0 0 30px rgba(0, 0, 255, 0.5);
+}
+
+.settings-content h2 {
+    color: #0ff;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 2rem;
+    text-shadow: 0 0 10px #00f;
+}
+
+.setting-item {
+    margin-bottom: 20px;
+}
+
+.setting-item label {
+    display: block;
+    margin-bottom: 8px;
+    color: #0ff;
+}
+
+.setting-item select, .setting-item input {
+    width: 100%;
+    padding: 10px;
+    background: rgba(0, 0, 30, 0.8);
+    border: 1px solid #00f;
+    border-radius: 5px;
+    color: white;
+}
+
+/* افکت‌های ویژه */
+.glow {
+    text-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
+}
+
+.power-up-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+/* پاسخگو برای موبایل */
+@media (max-width: 768px) {
+    .game-title {
+        font-size: 2.5rem;
+    }
+    
+    .game-btn {
+        padding: 12px 24px;
+        font-size: 1rem;
+        min-width: 160px;
+    }
+    
+    #ui {
+        font-size: 16px;
+        padding: 8px;
+    }
+    
+    #score {
+        font-size: 20px;
+    }
+    
+    #upgradeMenu {
+        flex-direction: column;
+        bottom: 10px;
+        width: 90%;
+    }
+}
+

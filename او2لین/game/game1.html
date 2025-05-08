@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ماجراجویی فضایی خفن | نسخه حرفه‌ای</title>
+    <link rel="stylesheet" href="/game/css/game1.css">
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- رابط کاربری بازی -->
+        <div id="ui">
+            <div id="score">امتیاز: 0</div>
+            <div id="level">سطح: 1</div>
+            <div id="health">سلامتی: <span id="healthValue">100</span>%</div>
+            <div id="healthBar"><div id="healthBarFill"></div></div>
+        </div>
+        
+        <!-- دکمه‌های کنترل بازی -->
+        <button id="pauseBtn" title="مکث">II</button>
+        <button id="backBtn" class="back-btn"  title="بازگشت"><a href="./gaming.html">  x  </a></button>
+        
+        <!-- منوی اصلی بازی -->
+        <div id="startScreen" class="game-screen">
+            <h1 class="game-title floating">ماجراجویی فضایی خفن</h1>
+            <div class="btn-container">
+                <button id="startBtn" class="game-btn">شروع بازی</button>
+                <button id="howToPlayBtn" class="game-btn">راهنمای بازی</button>
+                <button id="settingsBtn" class="game-btn">تنظیمات</button>
+                <button id="creditsBtn" class="game-btn">سازنده</button>
+            </div>
+        </div>
+        
+        <!-- صفحه پایان بازی -->
+        <div id="gameOverScreen" class="game-screen">
+            <h1 class="game-title">بازی تمام شد!</h1>
+            <div id="finalScore" class="glow" style="font-size: 1.5rem; margin-bottom: 2rem;">امتیاز نهایی: 0</div>
+            <div class="btn-container">
+                <button id="restartBtn" class="game-btn">دوباره بازی کن</button>
+                <button id="mainMenuBtn" class="game-btn">منوی اصلی</button>
+            </div>
+        </div>
+        
+        <!-- صفحه مکث -->
+        <div id="pauseScreen" class="game-screen">
+            <h1 class="game-title">بازی متوقف شد</h1>
+            <div class="btn-container">
+                <button id="resumeBtn" class="game-btn">ادامه بازی</button>
+                <button id="restartFromPauseBtn" class="game-btn">شروع مجدد</button>
+                <button id="quitToMenuBtn" class="game-btn">خروج به منو</button>
+            </div>
+        </div>
+        
+        <!-- منوی ارتقا -->
+        <div id="upgradeMenu">
+            <h3 style="color: #0ff; text-align: center; margin-bottom: 10px;">ارتقای سطح! یکی را انتخاب کنید:</h3>
+            <button class="upgrade-btn game-btn" data-upgrade="speed">
+                <span class="power-up-icon" style="background: #0f0;"></span>
+                افزایش سرعت
+            </button>
+            <button class="upgrade-btn game-btn" data-upgrade="fireRate">
+                <span class="power-up-icon" style="background: #00f;"></span>
+                افزایش آتش
+            </button>
+            <button class="upgrade-btn game-btn" data-upgrade="shield">
+                <span class="power-up-icon" style="background: #0ff;"></span>
+                محافظ
+            </button>
+        </div>
+        
+        <!-- صفحه راهنمای بازی -->
+        <div id="howToPlayScreen">
+            <div class="how-to-play-content">
+                <h2>راهنمای بازی ماجراجویی فضایی</h2>
+                <p>به بازی ماجراجویی فضایی خفن خوش آمدید! در این بازی شما خلبان یک سفینه فضایی هستید که باید با دشمنان بجنگید و امتیاز کسب کنید.</p>
+                
+                <h3 style="color: #0ff; margin-top: 20px;">کنترل‌ها:</h3>
+                <ul>
+                    <li><strong>صفحه کلید:</strong> از کلیدهای جهت‌دار یا جهت  برای حرکت استفاده کنید</li>
+                    <li><strong>شلیک:</strong> کلیک ماوس یا لمس صفحه یا کلید فاصله</li>
+                    <li><strong>مکث:</strong> کلید P یا دکمه مکث در بازی</li>
+                </ul>
+                
+                <h3 style="color: #0ff; margin-top: 20px;">اهداف بازی:</h3>
+                <ul>
+                    <li>نابود کردن دشمنان و کسب امتیاز</li>
+                    <li>رسیدن به سطوح بالاتر</li>
+                    <li>زنده ماندن تا جای ممکن!</li>
+                </ul>
+                
+                <h3 style="color: #0ff; margin-top: 20px;">قدرت‌افزاها:</h3>
+                <ul>
+                    <li><span class="power-up-icon" style="background: #f00;"></span> <strong>قرمز:</strong> سلامتی (+20%)</li>
+                    <li><span class="power-up-icon" style="background: #0f0;"></span> <strong>سبز:</strong> سرعت (+20%)</li>
+                    <li><span class="power-up-icon" style="background: #00f;"></span> <strong>آبی:</strong> سرعت شلیک (+20%)</li>
+                    <li><span class="power-up-icon" style="background: #0ff;"></span> <strong>فیروزه‌ای:</strong> محافظ (+1 لایه)</li>
+                    <li><span class="power-up-icon" style="background: #ff0;"></span> <strong>زرد:</strong> امتیاز (+500)</li>
+                </ul>
+                
+                <h3 style="color: #0ff; margin-top: 20px;">سیستم ارتقا:</h3>
+                <p>هر 1000 امتیاز یک سطح بالا می‌روید و می‌توانید یکی از قابلیت‌های سفینه خود را ارتقا دهید.</p>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <button id="closeHowToPlayBtn" class="game-btn" style="min-width: 150px;">بستن راهنما</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- صفحه تنظیمات -->
+        <div id="settingsScreen">
+            <div class="settings-content">
+                <h2>تنظیمات بازی</h2>
+                
+                <div class="setting-item">
+                    <label for="soundVolume">صدا</label>
+                    <input type="range" id="soundVolume" min="0" max="1" step="0.1" value="1">
+                </div>
+                
+                <div class="setting-item">
+                    <label for="controlsType">نوع کنترل</label>
+                    <select id="controlsType">
+                        <option value="keyboard">صفحه کلید</option>
+                        <option value="touch">لمسی</option>
+                        <option value="both">هر دو</option>
+                    </select>
+                </div>
+                
+                <div class="setting-item">
+                    <label for="graphicsQuality">کیفیت گرافیک</label>
+                    <select id="graphicsQuality">
+                        <option value="high">بالا</option>
+                        <option value="medium" selected>متوسط</option>
+                        <option value="low">پایین</option>
+                    </select>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <button id="saveSettingsBtn" class="game-btn">ذخیره تنظیمات</button>
+                    <button id="closeSettingsBtn" class="game-btn" style="background: linear-gradient(to bottom, #f00, #800); margin-left: 10px;">انصراف</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- صفحه اعتبارات -->
+        <div id="creditsScreen" class="game-screen" style="display: none;">
+            <h1 class="game-title">ساخته شده توسط</h1>
+            <div style="text-align: center; margin-bottom: 30px; font-size: 1.2rem; line-height: 2;">
+                <p>طراحی و برنامه‌نویسی: <span class="glow" style="color: #0ff;">بهراد یعقوبی </span></p>
+                <p>گرافیک: <span class="glow" style="color: #f0f;">HTML5 Canvas</span></p>
+                <p>صداها: <span class="glow" style="color: #ff0;">JS Audio</span></p>
+                <p>ایده: <span class="glow" style="color: #0f0;">بازی‌های کلاسیک فضایی</span></p>
+            </div>
+            <div class="btn-container">
+                <button id="closeCreditsBtn" class="game-btn">بازگشت به منو</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/game1.js"></script>
+</body>
+</html>
